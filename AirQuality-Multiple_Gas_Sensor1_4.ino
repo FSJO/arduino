@@ -93,9 +93,11 @@ float           NH4Curve[2]     =  {84.07117895, -4.41107687};   //MQ135
 float           C2H50H_Curve[2] =  {74.77989144, 3.010328075};   //MQ135 
 float           CH3Curve[2]     =  {47.01770503, -3.281901967};  //MQ135
 float           CH3_2COCurve[2] =  {7.010800878, -2.122018939};  //MQ135
-float           SO2_Curve[2]    =  {40.44109566, -1.085728557};  //MQ136
-float           CH4_secCurve[2] =  {57.82777729, -1.187494933};  //MQ136
-float           CO_terCurve[2]  =  {2142.297846, -2.751369226};  //MQ136
+float           SO2_Curve[2]    =  {40.44109566, -1.085728557};  //MQ136 http://china-total.com/product/meter/gas-sensor/MQ136.pdf
+float           CH4_secCurve[2] =  {57.82777729, -1.187494933};  //MQ136 http://china-total.com/product/meter/gas-sensor/MQ136.pdf
+float           CO_terCurve[2]  =  {2142.297846, -2.751369226};  //MQ136 http://china-total.com/product/meter/gas-sensor/MQ136.pdf
+float           H2S_secCurve[2] =  {,}; //MQ136 http://www.sensorica.ru/pdf/MQ-136.pdf
+float           NH4_secCurve[2] =  {,};   //MQ136 http://www.sensorica.ru/pdf/MQ-136.pdf
 float           NHEX_Curve[2]  =  {2142.297846, -2.751369226};   //MQ138 (1.8,200) (0.8,1000) (0.28,10000)
 float           C6H6_Curve[2]  =  {2142.297846, -2.751369226};   //MQ138 (2.1,200) (1,1000) (0.32,10000)
 float           C3H8_Curve[2]  =  {2142.297846, -2.751369226};   //MQ138 (1.8,200) (0.8,1000) (0.28,10000)
@@ -104,7 +106,7 @@ float           CH4_terCurve[2] =  {2142.297846, -2.751369226};   //MQ138 (3,200
 float           C2H5OH_secCurve[2] =  {0.2995093465,-3.148170562};//TGS2600
 float           C4H10Curve[2]   =  {0.3555567714, -3.337882361}; //TGS2600
 float           H2_terCurve[2]  =  {0.3417050674, -2.887154835}; //TGS2600
-float           C7H8Curve[2]    =  {37.22590719,   2.078062258}; //TGS2602     (0.3;1)( 0.8;10) (0.4;30)
+float           C7H8Curve[2]    =  {0.1319857248,   -1.69516241}; //TGS2602     (0.3;1)( 0.08;10) (0.04;30)
 float           H2S_Curve[2]    =  {0.05566582614,-2.954075758}; //TGS2602     (0.8,0.1) (0.4,1) (0.25,3)
 float           C2H5OH_quarCurve[2] =  {0.5409499131,-2.312489623};//TGS2602  (0.75,1) (0.3,10) (0.17,30)  
 float           NH3_Curve[2]    =  {0.585030495,  -3.448654502  }; //TGS2602   (0.8,1) (0.5,10) (0.3,30) 
@@ -130,7 +132,7 @@ float RL4 = 0.990;    //MQ135   FC-22
 float Ro5 = 2.511;    //2SH12   
 float RL5 = 4000;     //2SH12   MQ-XL-V2 auto-ctrl.com 
 float Ro6 = 2.511;    //TGS2602 0.05 this has to be tuned 10K Ohm
-float RL6 = 0.893;    //TGS2602 Gas Sensor V1.3 auto-ctrl.com 
+float RL6 = 0.893;    //TGmq136S2602 Gas Sensor V1.3 auto-ctrl.com 
 int val = 0;          // variable to store the value coming from the sensor
 
 
@@ -241,7 +243,7 @@ void setup()
   Serial.println(Ro2);
   gw.send(pcMsg_mq131.set((long int)ceil(Ro2)));
   Serial.print("    TGS2600:"); 
-  Ro3 = MQCalibration(TGS2600_SENSOR,10,RL3,C2H5OH_terCurve);
+  Ro3 = MQCalibration(TGS2600_SENSOR,10,RL3,C2H5OH_secCurve);
   Serial.println(Ro3);
   gw.send(pcMsg_tgs2600.set((long int)ceil(Ro3)));
   Serial.print("    MQ135:"); 
@@ -548,7 +550,7 @@ int MQGetGasPercentage(float rs_ro_ratio, float ro, int gas_id, int sensor_id)
     }
   } else if (sensor_id == TGS2600_SENSOR ){
     if ( gas_id == GAS_C2H5OH ) {
-      return MQGetPercentage(rs_ro_ratio,ro,C2H5OH_terCurve);  //TGS2600
+      return MQGetPercentage(rs_ro_ratio,ro,C2H5OH_secCurve);  //TGS2600
     } else if ( gas_id == GAS_C4H10 ) {
        return MQGetPercentage(rs_ro_ratio,ro,C4H10Curve);   //TGS2600
     } else if ( gas_id == GAS_H2 ) {
